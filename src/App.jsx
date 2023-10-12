@@ -1,4 +1,4 @@
-import { CssBaseline } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   Actors,
@@ -7,27 +7,25 @@ import {
   Navbar,
   Profile,
 } from "./components";
-import { Content, Root, Toolbar } from "./components/styles";
 
 const App = () => {
   return (
-    <Root>
+    <Box display="flex" height="100%">
       <BrowserRouter>
         <CssBaseline />
         <Navbar />
-        <Content>
-          <Toolbar>
-            <Routes>
-              <Route path="/" element="Home" />
-              <Route path="/movies" element={<Movies />} />
-              <Route path="/movie/:id" element={<MovieInformation />} />
-              <Route path="/actors/:id" element={<Actors />} />
-              <Route path="/profile/:id" element={<Profile />} />
-            </Routes>
-          </Toolbar>
-        </Content>
+        <Box sx={{ flexGrow: "1", padding: "2em" }}>
+          <Box height='70px'/>
+          <Routes>
+            <Route path="/" element="Home" />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/movie/:id" element={<MovieInformation />} />
+            <Route path="/actors/:id" element={<Actors />} />
+            <Route path="/profile/:id" element={<Profile />} />
+          </Routes>
+        </Box>
       </BrowserRouter>
-    </Root>
+    </Box>
   );
 };
 
