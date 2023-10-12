@@ -1,24 +1,33 @@
 import { CssBaseline } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import {Actors, MovieInformation, Movies, Navbar, Profile} from './components'
+import {
+  Actors,
+  MovieInformation,
+  Movies,
+  Navbar,
+  Profile,
+} from "./components";
+import { Content, Root, Toolbar } from "./components/styles";
 
 const App = () => {
   return (
-    <div>
+    <Root>
       <BrowserRouter>
         <CssBaseline />
-        <Navbar/>
-        <main>
-        <Routes>
-            <Route path='/' element='Home' />
-            <Route path='/movies' element={<Movies/>} />
-            <Route path='/movie/:id' element={<MovieInformation/>} />
-            <Route path='/actors/:id' element={<Actors/>} />
-            <Route path='/profile/:id' element={<Profile/>} />
-          </Routes>
-        </main>
+        <Navbar />
+        <Content>
+          <Toolbar>
+            <Routes>
+              <Route path="/" element="Home" />
+              <Route path="/movies" element={<Movies />} />
+              <Route path="/movie/:id" element={<MovieInformation />} />
+              <Route path="/actors/:id" element={<Actors />} />
+              <Route path="/profile/:id" element={<Profile />} />
+            </Routes>
+          </Toolbar>
+        </Content>
       </BrowserRouter>
-    </div>
+    </Root>
   );
 };
 
