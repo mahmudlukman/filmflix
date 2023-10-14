@@ -1,9 +1,27 @@
+/* eslint-disable react/prop-types */
+import { Grid, useTheme } from "@mui/material";
+import Movie from "../Movie/Movie";
 
-
-const MovieList = () => {
+const MovieList = ({ movies }) => {
+  const theme = useTheme();
   return (
-    <div>MovieList</div>
-  )
-}
+    <Grid
+      container
+      display="flex"
+      flexWrap="wrap"
+      justifyContent="space-between"
+      overflow="auto"
+      sx={{
+        [theme.breakpoints.down("sm")]: {
+          justifyContent: "center",
+        },
+      }}
+    >
+      {movies.results.map((movie, i) => (
+        <Movie key={i} movie={movie} i={i}/>
+      ))}
+    </Grid>
+  );
+};
 
-export default MovieList
+export default MovieList;
