@@ -54,7 +54,7 @@ const Sidebar = ({ setMobileOpen }) => {
             color={theme.palette.text.primary}
             style={{ textDecoration: "none" }}
           >
-            <ListItem onClick={() => {}} ButtonBase>
+            <ListItem onClick={() => {}} buttonbase='true'>
               {/* <ListItemIcon>
                 <img
                   src={redLogo}
@@ -80,7 +80,7 @@ const Sidebar = ({ setMobileOpen }) => {
             color={theme.palette.text.primary}
             style={{ textDecoration: "none" }}
           >
-            <ListItem onClick={() => {}} ButtonBase>
+            <ListItem onClick={() => {}} buttonbase="true">
               {/* <ListItemIcon>
                 <img
                   src={redLogo}
