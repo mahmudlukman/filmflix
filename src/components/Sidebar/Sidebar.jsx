@@ -9,20 +9,16 @@ import {
   Box,
   CircularProgress,
   useTheme,
+  Link,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import { useGetGenresQuery } from "../../redux/services/TMDB";
+import genreIcons from "../../assets/genres";
 
 const categories = [
   { label: "Popular", value: "popular" },
   { label: "Top-Rated", value: "top_rated" },
   { label: "Upcoming", value: "upcoming" },
-];
-
-const demoCategories = [
-  { label: "Comedy", value: "comedy" },
-  { label: "Action", value: "action" },
-  { label: "Horror", value: "horror" },
-  { label: "Animation", value: "animation" },
 ];
 
 const redLogo =
@@ -32,9 +28,12 @@ const blueLogo =
 
 const Sidebar = ({ setMobileOpen }) => {
   const theme = useTheme();
+  const { data, isFetching } = useGetGenresQuery();
+
   return (
     <>
       <Link
+        component={RouterLink}
         to="/"
         style={{ display: "flex", justifyContent: "center", padding: "10% 0" }}
       >
@@ -49,22 +48,24 @@ const Sidebar = ({ setMobileOpen }) => {
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
           <Link
+            component={RouterLink}
             key={value}
             to="/"
             color={theme.palette.text.primary}
             style={{ textDecoration: "none" }}
           >
-            <ListItem onClick={() => {}} buttonbase='true'>
-              {/* <ListItemIcon>
-                <img
-                  src={redLogo}
+            <ListItem onClick={() => {}} buttonbase="true">
+              <ListItemIcon>
+                <Box
+                  component='img'
+                  src={genreIcons[label.toLowerCase()]}
                   height={30}
-                  style={{
-                    filter:
-                      theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                  }}
+                  // style={{
+                  //   filter:
+                  //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                  // }}
                 />
-              </ListItemIcon> */}
+              </ListItemIcon>
               <ListItemText primary={label} />
             </ListItem>
           </Link>
@@ -73,28 +74,35 @@ const Sidebar = ({ setMobileOpen }) => {
       <Divider />
       <List>
         <ListSubheader>Genres</ListSubheader>
-        {demoCategories.map(({ label, value }) => (
-          <Link
-            key={value}
-            to="/"
-            color={theme.palette.text.primary}
-            style={{ textDecoration: "none" }}
-          >
-            <ListItem onClick={() => {}} buttonbase="true">
-              {/* <ListItemIcon>
-                <img
-                  src={redLogo}
-                  height={30}
-                  style={{
-                    filter:
-                      theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                  }}
-                />
-              </ListItemIcon> */}
-              <ListItemText primary={label} />
-            </ListItem>
-          </Link>
-        ))}
+        {isFetching ? (
+          <Box display="flex" justifyContent="center">
+            <CircularProgress />
+          </Box>
+        ) : (
+          data.genres.map(({ name, id }) => (
+            <Link
+              key={name}
+              to="/"
+              color={theme.palette.text.primary}
+              style={{ textDecoration: "none" }}
+            >
+              <ListItem onClick={() => {}} buttonbase="true">
+                <ListItemIcon>
+                  <Box
+                    component='img'
+                    src={genreIcons[name.toLowerCase()]}
+                    height={30}
+                    // sx={{
+                    //   filter:
+                    //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
+                    // }}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={name} />
+              </ListItem>
+            </Link>
+          ))
+        )}
       </List>
     </>
   );

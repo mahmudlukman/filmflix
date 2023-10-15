@@ -17,8 +17,8 @@ const App = () => {
         <Box sx={{ flexGrow: "1", padding: "2em" }}>
           <Box height='70px'/>
           <Routes>
-            <Route path="/" element="Home" />
-            <Route path="/movies" element={<Movies />} />
+            <Route path="/" element={<Movies />} />
+            {/* <Route path="/movies" element={<Movies />} /> */}
             <Route path="/movie/:id" element={<MovieInformation />} />
             <Route path="/actors/:id" element={<Actors />} />
             <Route path="/profile/:id" element={<Profile />} />
