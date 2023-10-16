@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
+import Search from "../Search/Search";
 
 const drawerWidth = 240;
 
@@ -61,7 +62,7 @@ const Navbar = () => {
           <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
-          {!isMobile && "Search ..."}
+          {!isMobile && <Search/>}
           <Box>
             {!isAuthenticated ? (
               <Button color="inherit" onClick={() => {}}>
@@ -72,7 +73,12 @@ const Navbar = () => {
                 color="inherit"
                 component={Link}
                 to={`/profile/:id`}
-                sx={{'&:hover': {color: 'white !important', textDecoration: 'none'}}}
+                sx={{
+                  "&:hover": {
+                    color: "white !important",
+                    textDecoration: "none",
+                  },
+                }}
                 onClick={() => {}}
               >
                 {!isMobile && <>My Movies &nbsp;</>}
@@ -84,7 +90,7 @@ const Navbar = () => {
               </Button>
             )}
           </Box>
-          {isMobile && "Search ..."}
+          {isMobile && <Search/>}
         </Toolbar>
       </AppBar>
       <Box>
@@ -103,7 +109,7 @@ const Navbar = () => {
               open={mobileOpen}
               onClose={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
               ModalProps={{ keepMounted: true }}
-              style={{width: drawerWidth}}
+              style={{ width: drawerWidth }}
             >
               <Sidebar setMobileOpen={setMobileOpen} />
             </Drawer>

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+/* eslint-disable react/prop-types */
+// import { useEffect } from "react";
 import {
   Divider,
   List,
@@ -14,6 +15,8 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useGetGenresQuery } from "../../redux/services/TMDB";
 import genreIcons from "../../assets/genres";
+import { selectGenreOrCategory } from "../../redux/features/currentGenreOrCategory";
+import { useDispatch, useSelector } from "react-redux";
 
 const categories = [
   { label: "Popular", value: "popular" },
@@ -27,8 +30,13 @@ const blueLogo =
   "https://fontmeme.com/permalink/231012/fbf91cf7f941ecc4f4a72a7ebb2a634d.png";
 
 const Sidebar = ({ setMobileOpen }) => {
+  const { genreIdOrCategoryName } = useSelector(
+    (state) => state.currentGenreOrCategory
+  );
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
+  const dispatch = useDispatch();
+  console.log(genreIdOrCategoryName)
 
   return (
     <>
@@ -37,7 +45,8 @@ const Sidebar = ({ setMobileOpen }) => {
         to="/"
         style={{ display: "flex", justifyContent: "center", padding: "10% 0" }}
       >
-        <img
+        <Box
+          component="img"
           src={theme.palette.mode === "light" ? redLogo : blueLogo}
           alt="Filmflix Logo"
           width={"70%"}
@@ -51,16 +60,18 @@ const Sidebar = ({ setMobileOpen }) => {
             component={RouterLink}
             key={value}
             to="/"
-            color={theme.palette.text.primary}
-            style={{ textDecoration: "none" }}
+            sx={{ textDecoration: "none", color: theme.palette.text.primary }}
           >
-            <ListItem onClick={() => {}} buttonbase="true">
+            <ListItem
+              onClick={() => dispatch(selectGenreOrCategory(value))}
+              buttonbase="true"
+            >
               <ListItemIcon>
                 <Box
-                  component='img'
+                  component="img"
                   src={genreIcons[label.toLowerCase()]}
                   height={30}
-                  // style={{
+                  // sx={{
                   //   filter:
                   //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
                   // }}
@@ -86,10 +97,13 @@ const Sidebar = ({ setMobileOpen }) => {
               color={theme.palette.text.primary}
               style={{ textDecoration: "none" }}
             >
-              <ListItem onClick={() => {}} buttonbase="true">
+              <ListItem
+                onClick={() => dispatch(selectGenreOrCategory(id))}
+                buttonbase="true"
+              >
                 <ListItemIcon>
                   <Box
-                    component='img'
+                    component="img"
                     src={genreIcons[name.toLowerCase()]}
                     height={30}
                     // sx={{
