@@ -71,10 +71,9 @@ const Sidebar = ({ setMobileOpen }) => {
                   component="img"
                   src={genreIcons[label.toLowerCase()]}
                   height={30}
-                  // sx={{
-                  //   filter:
-                  //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                  // }}
+                  sx={{
+                    filter: theme.palette.mode === "dark" && "invert(1)",
+                  }}
                 />
               </ListItemIcon>
               <ListItemText primary={label} />
@@ -106,10 +105,9 @@ const Sidebar = ({ setMobileOpen }) => {
                     component="img"
                     src={genreIcons[name.toLowerCase()]}
                     height={30}
-                    // sx={{
-                    //   filter:
-                    //     theme.palette.mode === "dark" ? "dark" : "invert(1)",
-                    // }}
+                    sx={{
+                      filter: theme.palette.mode === "dark" && "invert(1)",
+                    }}
                   />
                 </ListItemIcon>
                 <ListItemText primary={name} />
