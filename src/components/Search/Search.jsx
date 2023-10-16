@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TextField, InputAdornment, useTheme, Box } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+// import { useLocation } from "react-router-dom";
 import { searchMovie } from "../../redux/features/currentGenreOrCategory";
 
 const Search = () => {
