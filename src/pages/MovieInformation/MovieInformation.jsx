@@ -9,7 +9,10 @@ import {
   Theaters,
 } from "@mui/icons-material";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { useGetMovieQuery, useGetRecommendationsQuery } from "../../redux/services/TMDB";
+import {
+  useGetMovieQuery,
+  useGetRecommendationsQuery,
+} from "../../redux/services/TMDB";
 import genreIcons from "../../assets/genres";
 import {
   Box,
@@ -21,18 +24,34 @@ import {
   Link,
   ButtonGroup,
   Button,
+  Modal,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { selectGenreOrCategory } from "../../redux/features/currentGenreOrCategory";
-import MovieList from '../../components/MovieList/MovieList'
+import MovieList from "../../components/MovieList/MovieList";
+import { useState } from "react";
+import { styled } from "@mui/system";
+
+const MyIFrame = styled("iframe")(({ theme }) => ({
+  width: "50%",
+  height: "50%",
+  [theme.breakpoints.down("sm")]: {
+    width: "90%",
+    height: "90%",
+  },
+}));
 
 const MovieInformation = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
   const theme = useTheme();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
 
-  const { data: recommendations } = useGetRecommendationsQuery({list: '/recommendations', movie_id: id});
+  const { data: recommendations } = useGetRecommendationsQuery({
+    list: "/recommendations",
+    movie_id: id,
+  });
 
   const isMovieFavorited = true;
   const isMovieWhatchlisted = false;
@@ -243,11 +262,7 @@ const MovieInformation = () => {
                 >
                   IMDB
                 </Button>
-                <Button
-                  onClick={() => {}}
-                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
-                  endIcon={<Theaters />}
-                >
+                <Button onClick={() => setOpen(true)} endIcon={<Theaters />}>
                   Trailer
                 </Button>
               </ButtonGroup>
@@ -284,12 +299,35 @@ const MovieInformation = () => {
           </Box>
         </Grid>
       </Grid>
-      <Box marginTop='5rem' width='100%'>
+      <Box marginTop="5rem" width="100%">
         <Typography variant="h3" gutterBottom align="center">
           You might also like
         </Typography>
-        {recommendations ? <MovieList movies={recommendations} numberOfMovies={12}/> : <Box>Sorry, nothing was found!</Box>}
+        {recommendations ? (
+          <MovieList movies={recommendations} numberOfMovies={12} />
+        ) : (
+          <Box>Sorry, nothing was found!</Box>
+        )}
       </Box>
+      <Modal
+        open={open}
+        closeAfterTransition
+        onClose={() => setOpen(false)}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {data?.videos?.results?.length > 0 && (
+          <MyIFrame
+            autoPlay
+            title="Trailer"
+            src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+            allow="autoplay"
+          />
+        )}
+      </Modal>
     </Grid>
   );
 };
