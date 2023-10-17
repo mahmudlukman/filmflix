@@ -29,14 +29,14 @@ const redLogo =
 const blueLogo =
   "https://fontmeme.com/permalink/231012/fbf91cf7f941ecc4f4a72a7ebb2a634d.png";
 
-const Sidebar = ({ setMobileOpen }) => {
+const Sidebar = () => {
   const { genreIdOrCategoryName } = useSelector(
     (state) => state.currentGenreOrCategory
   );
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
-  console.log(genreIdOrCategoryName)
+
 
   return (
     <>

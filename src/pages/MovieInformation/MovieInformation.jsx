@@ -1,6 +1,15 @@
-import { Movie as MovieIcon } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Favorite,
+  FavoriteBorderOutlined,
+  Language,
+  Movie as MovieIcon,
+  PlusOne,
+  Remove,
+  Theaters,
+} from "@mui/icons-material";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { useGetMovieQuery } from "../../redux/services/TMDB";
+import { useGetMovieQuery, useGetRecommendationsQuery } from "../../redux/services/TMDB";
 import genreIcons from "../../assets/genres";
 import {
   Box,
@@ -10,15 +19,26 @@ import {
   Typography,
   useTheme,
   Link,
+  ButtonGroup,
+  Button,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { selectGenreOrCategory } from "../../redux/features/currentGenreOrCategory";
+import MovieList from '../../components/MovieList/MovieList'
 
 const MovieInformation = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
   const theme = useTheme();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const { data: recommendations } = useGetRecommendationsQuery({list: '/recommendations', movie_id: id});
+
+  const isMovieFavorited = true;
+  const isMovieWhatchlisted = false;
+
+  const addToFavorites = () => {};
+  // const addToWatchlist = () => {};
 
   if (isFetching) {
     return (
@@ -148,7 +168,128 @@ const MovieInformation = () => {
             </Link>
           ))}
         </Grid>
+        <Typography variant="h5" gutterBottom style={{ marginTop: "10px" }}>
+          Overview
+        </Typography>
+        <Typography style={{ marginBottom: "2rem" }}>
+          {data?.overview}
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          Top Cast
+        </Typography>
+        <Grid item container spacing={2}>
+          {data &&
+            data.credits?.cast
+              ?.map(
+                (character, i) =>
+                  character.profile_path && (
+                    <Grid
+                      key={i}
+                      item
+                      xs={4}
+                      component={Link}
+                      to={`/actors/${character.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Box
+                        component="img"
+                        src={`https://image.tmdb.org/t/p/w500/${character.profile_path}`}
+                        alt={character.name}
+                        sx={{
+                          width: "100%",
+                          maxWidth: "7em",
+                          height: "8em",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                        }}
+                      />
+                      <Typography color="textPrimary">
+                        {character?.name}
+                      </Typography>
+                      <Typography color="textSecondary">
+                        {character.character.split("/")[0]}
+                      </Typography>
+                    </Grid>
+                  )
+              )
+              .slice(0, 6)}
+        </Grid>
+        <Grid item container style={{ marginTop: "2rem" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+              },
+            }}
+          >
+            <Grid item xs={12} sm={6}>
+              <ButtonGroup size="small" variant="outlined">
+                <Button
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={data?.homepage}
+                  endIcon={<Language />}
+                >
+                  Website
+                </Button>
+                <Button
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
+                  endIcon={<MovieIcon />}
+                >
+                  IMDB
+                </Button>
+                <Button
+                  onClick={() => {}}
+                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
+                  endIcon={<Theaters />}
+                >
+                  Trailer
+                </Button>
+              </ButtonGroup>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <ButtonGroup size="small" variant="outlined">
+                <Button
+                  onClick={addToFavorites}
+                  endIcon={
+                    isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />
+                  }
+                >
+                  {isMovieFavorited ? "Unfavorite" : "Favorite"}
+                </Button>
+                <Button
+                  sx={{ borderColor: "primary.main" }}
+                  endIcon={isMovieWhatchlisted ? <Remove /> : <PlusOne />}
+                >
+                  Watchlist
+                </Button>
+                <Button endIcon={<ArrowBack />}>
+                  <Typography
+                    component={Link}
+                    to="/"
+                    color="inherit"
+                    variant="subtitle2"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Back
+                  </Typography>
+                </Button>
+              </ButtonGroup>
+            </Grid>
+          </Box>
+        </Grid>
       </Grid>
+      <Box marginTop='5rem' width='100%'>
+        <Typography variant="h3" gutterBottom align="center">
+          You might also like
+        </Typography>
+        {recommendations ? <MovieList movies={recommendations} numberOfMovies={12}/> : <Box>Sorry, nothing was found!</Box>}
+      </Box>
     </Grid>
   );
 };
