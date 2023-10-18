@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-// import { useEffect } from "react";
 import {
   Divider,
   List,
@@ -16,7 +15,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useGetGenresQuery } from "../../redux/services/TMDB";
 import genreIcons from "../../assets/genres";
 import { selectGenreOrCategory } from "../../redux/features/currentGenreOrCategory";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const categories = [
   { label: "Popular", value: "popular" },
@@ -30,9 +29,9 @@ const redLogo =
   "https://fontmeme.com/permalink/231018/90d97b645b85f38e444ec2e727cec387.png";
 
 const Sidebar = () => {
-  const { genreIdOrCategoryName } = useSelector(
-    (state) => state.currentGenreOrCategory
-  );
+  // const { genreIdOrCategoryName } = useSelector(
+  //   (state) => state.currentGenreOrCategory
+  // );
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();

@@ -126,27 +126,6 @@ const MovieInformation = () => {
     setIsMovieWatchlisted((prev) => !prev);
   };
 
-  // const addToWatchlist = async () => {
-  //   await axios.post(
-  //     `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${
-  //       import.meta.env.VITE_REACT_APP_TMDB_KEY
-  //     }$session_id=${localStorage.getItem("session_id")}`,
-  //     {
-  //       media_type: "movie",
-  //       media_id: id,
-  //       favorite: !isMovieWatchlisted,
-  //     },
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${
-  //           import.meta.env.VITE_REACT_READ_ACCESS_TOKEN
-  //         }`,
-  //       },
-  //     }
-  //   );
-  //   setIsMovieWatchlisted((prev) => !prev);
-  // };
-
   if (isFetching) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -323,6 +302,7 @@ const MovieInformation = () => {
                           height: "8em",
                           objectFit: "cover",
                           borderRadius: "10px",
+                          boxShadow: "0.5em 1em 1em rgba(64, 64, 70, 0.5)",
                         }}
                       />
                       <Typography color="textPrimary">

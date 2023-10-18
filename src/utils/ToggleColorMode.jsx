@@ -7,7 +7,7 @@ import { createContext } from "react";
 export const ColorModeContext = createContext();
 
 export const ToggleColorMode = ({ children }) => {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState("dark");
 
   const ToggleColorMode = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
