@@ -7,8 +7,12 @@ import {
   Navbar,
   Profile,
 } from "./components";
+import useAlan from "./components/Alan";
+import { useRef } from "react";
 
 const App = () => {
+  useAlan();
+  const alanBtnContainer = useRef();
   return (
     <Box display="flex" height="100%">
       <BrowserRouter>
@@ -27,6 +31,7 @@ const App = () => {
           </Routes>
         </Box>
       </BrowserRouter>
+      <Box ref={alanBtnContainer} />
     </Box>
   );
 };
