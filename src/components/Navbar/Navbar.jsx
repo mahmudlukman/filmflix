@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   useTheme,
   Box,
+  Tooltip,
 } from "@mui/material";
 import {
   Menu,
@@ -34,7 +35,7 @@ const Navbar = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const colorMode = useContext(ColorModeContext)
+  const colorMode = useContext(ColorModeContext);
 
   const token = localStorage.getItem("request_token");
   const sessionIdFromLocalStorage = localStorage.getItem("session_id");
@@ -89,7 +90,11 @@ const Navbar = () => {
               <Menu />
             </IconButton>
           )}
-          <IconButton color="inherit" sx={{ ml: 1 }} onClick={colorMode.ToggleColorMode}>
+          <IconButton
+            color="inherit"
+            sx={{ ml: 1 }}
+            onClick={colorMode.ToggleColorMode}
+          >
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}
@@ -112,11 +117,13 @@ const Navbar = () => {
                 onClick={() => {}}
               >
                 {!isMobile && <>My Movies &nbsp;</>}
-                <Avatar
-                  style={{ width: 30, height: 30 }}
-                  alt="profile"
-                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
-                />
+                <Tooltip title={user.username}>
+                  <Avatar
+                    style={{ width: 30, height: 30 }}
+                    alt="profile"
+                    src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
+                  />
+                </Tooltip>
               </Button>
             )}
           </Box>

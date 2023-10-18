@@ -2,8 +2,9 @@
 import { Grid, useTheme } from "@mui/material";
 import Movie from "../Movie/Movie";
 
-const MovieList = ({ movies, numberOfMovies }) => {
+const MovieList = ({ movies, numberOfMovies, excludeFirst }) => {
   const theme = useTheme();
+  const startFrom = excludeFirst ? 1 : 0;
   return (
     <Grid
       container
@@ -17,8 +18,8 @@ const MovieList = ({ movies, numberOfMovies }) => {
         },
       }}
     >
-      {movies.results.slice(0, numberOfMovies).map((movie, i) => (
-        <Movie key={i} movie={movie} i={i}/>
+      {movies.results.slice(startFrom, numberOfMovies).map((movie, i) => (
+        <Movie key={i} movie={movie} i={i} />
       ))}
     </Grid>
   );
