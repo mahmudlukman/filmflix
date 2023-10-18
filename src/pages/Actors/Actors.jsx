@@ -13,12 +13,14 @@ import {
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import MovieList from "../../components/MovieList/MovieList";
+import { useState } from "react";
+import Pagination from "../../components/pagination/Pagination";
 
 const Actors = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
-  const page = 1;
+  const [page, setPage] = useState(1)
 
   const { data, isFetching, error } = useGetActorsDetailsQuery(id);
   const { data: movies } = useGetMoviesByActorIdQuery({ id, page });
@@ -82,7 +84,7 @@ const Actors = () => {
           <Typography variant="h5" gutterBottom>
             Born: {new Date(data?.birthday).toDateString()}
           </Typography>
-          <Typography variant="body1" align="justify" paragraph ali>
+          <Typography variant="body1" align="justify" paragraph>
             {data?.biography || "Sorry, no biography yet..."}
           </Typography>
           <Box marginTop="2rem" display="flex" justifyContent="space-around">
@@ -109,6 +111,7 @@ const Actors = () => {
           Movies
         </Typography>
         {movies && <MovieList movies={movies} numberOfMovies={12} />}
+        <Pagination currentPage={page} setPage={setPage} totalPages={movies?.totalPages}/>
       </Box>
     </>
   );

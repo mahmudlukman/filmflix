@@ -8,8 +8,9 @@ import {
   Remove,
   Theaters,
 } from "@mui/icons-material";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import {
+  useGetListQuery,
   useGetMovieQuery,
   useGetRecommendationsQuery,
 } from "../../redux/services/TMDB";
@@ -26,11 +27,13 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectGenreOrCategory } from "../../redux/features/currentGenreOrCategory";
 import MovieList from "../../components/MovieList/MovieList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "@mui/system";
+import axios from "axios";
+import { userSelector } from "../../redux/features/auth";
 
 const MyIFrame = styled("iframe")(({ theme }) => ({
   width: "50%",
@@ -42,22 +45,107 @@ const MyIFrame = styled("iframe")(({ theme }) => ({
 }));
 
 const MovieInformation = () => {
+  const { user } = useSelector(userSelector);
   const { id } = useParams();
-  const { data, isFetching, error } = useGetMovieQuery(id);
   const theme = useTheme();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
 
+  const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: favoriteMovies } = useGetListQuery({
+    listName: "favorite/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
+  const { data: watchlistMovies } = useGetListQuery({
+    listName: "watchlist/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
   const { data: recommendations } = useGetRecommendationsQuery({
     list: "/recommendations",
     movie_id: id,
+    page: 1,
   });
 
-  const isMovieFavorited = true;
-  const isMovieWhatchlisted = false;
+  useEffect(() => {
+    setIsMovieFavorited(
+      !!favoriteMovies?.results?.find((movie) => movie?.id === data?.data)
+    );
+  }, [favoriteMovies, data]);
 
-  const addToFavorites = () => {};
-  // const addToWatchlist = () => {};
+  useEffect(() => {
+    setIsMovieWatchlisted(
+      !!watchlistMovies?.results?.find((movie) => movie?.id === data?.data)
+    );
+  }, [watchlistMovies, data]);
+
+  const addToFavorites = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${
+        import.meta.env.VITE_REACT_APP_TMDB_KEY
+      }$session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        favorite: !isMovieFavorited,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            import.meta.env.VITE_REACT_READ_ACCESS_TOKEN
+          }`,
+        },
+      }
+    );
+    setIsMovieFavorited((prev) => !prev);
+  };
+  const addToWatchlist = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${
+        import.meta.env.VITE_REACT_APP_TMDB_KEY
+      }$session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        watchlist: !isMovieWatchlisted,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            import.meta.env.VITE_REACT_READ_ACCESS_TOKEN
+          }`,
+        },
+      }
+    );
+    setIsMovieWatchlisted((prev) => !prev);
+  };
+
+  // const addToWatchlist = async () => {
+  //   await axios.post(
+  //     `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${
+  //       import.meta.env.VITE_REACT_APP_TMDB_KEY
+  //     }$session_id=${localStorage.getItem("session_id")}`,
+  //     {
+  //       media_type: "movie",
+  //       media_id: id,
+  //       favorite: !isMovieWatchlisted,
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${
+  //           import.meta.env.VITE_REACT_READ_ACCESS_TOKEN
+  //         }`,
+  //       },
+  //     }
+  //   );
+  //   setIsMovieWatchlisted((prev) => !prev);
+  // };
 
   if (isFetching) {
     return (
@@ -88,7 +176,17 @@ const MovieInformation = () => {
         },
       }}
     >
-      <Grid item sm={12} lg={4}>
+      <Grid
+        item
+        sm={12}
+        lg={4}
+        sx={{
+          [theme.breakpoints.down("md")]: {
+            display: "flex",
+            marginBottom: "30px",
+          },
+        }}
+      >
         <Box
           component="img"
           src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
@@ -100,7 +198,6 @@ const MovieInformation = () => {
             [theme.breakpoints.down("md")]: {
               margin: "0 auto",
               width: "50%",
-              height: "350px",
             },
             [theme.breakpoints.down("sm")]: {
               margin: "0 auto",
@@ -112,7 +209,16 @@ const MovieInformation = () => {
         />
       </Grid>
       <Grid item container direction="column" lg={7}>
-        <Typography variant="h3" align="center" gutterBottom>
+        <Typography
+          variant="h3"
+          align="center"
+          gutterBottom
+          sx={{
+            [theme.breakpoints.down("sm")]: {
+              fontSize: "2rem",
+            },
+          }}
+        >
           {data?.title} ({data.release_date.split("-")[0]})
         </Typography>
         <Typography variant="h5" align="center" gutterBottom>
@@ -141,10 +247,7 @@ const MovieInformation = () => {
             </Typography>
           </Box>
           <Typography variant="h6" align="center" gutterBottom>
-            {data?.runtime} min{" "}
-            {data?.spoken_languages.length > 0
-              ? ` / ${data?.spoken_languages[0].name}`
-              : ""}
+            {data?.runtime} min | {data?.spoken_languages[0].name}
           </Typography>
         </Grid>
         <Grid
@@ -190,7 +293,7 @@ const MovieInformation = () => {
         <Typography variant="h5" gutterBottom style={{ marginTop: "10px" }}>
           Overview
         </Typography>
-        <Typography style={{ marginBottom: "2rem" }}>
+        <Typography style={{ marginBottom: "2rem" }} align="justify">
           {data?.overview}
         </Typography>
         <Typography variant="h5" gutterBottom>
@@ -206,7 +309,7 @@ const MovieInformation = () => {
                       key={i}
                       item
                       xs={4}
-                      component={Link}
+                      component={RouterLink}
                       to={`/actors/${character.id}`}
                       style={{ textDecoration: "none" }}
                     >
@@ -244,7 +347,16 @@ const MovieInformation = () => {
               },
             }}
           >
-            <Grid item xs={12} sm={6}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                [theme.breakpoints.down("sm")]: {
+                  marginBottom: "20px",
+                },
+              }}
+            >
               <ButtonGroup size="small" variant="outlined">
                 <Button
                   target="_blank"
@@ -278,15 +390,14 @@ const MovieInformation = () => {
                   {isMovieFavorited ? "Unfavorite" : "Favorite"}
                 </Button>
                 <Button
+                  onClick={addToWatchlist}
                   sx={{ borderColor: "primary.main" }}
-                  endIcon={isMovieWhatchlisted ? <Remove /> : <PlusOne />}
+                  endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}
                 >
                   Watchlist
                 </Button>
-                <Button endIcon={<ArrowBack />}>
+                <Button endIcon={<ArrowBack />} onClick={() => navigate(-1)}>
                   <Typography
-                    component={Link}
-                    to="/"
                     color="inherit"
                     variant="subtitle2"
                     style={{ textDecoration: "none" }}

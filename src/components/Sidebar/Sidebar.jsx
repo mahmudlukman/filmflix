@@ -24,10 +24,10 @@ const categories = [
   { label: "Upcoming", value: "upcoming" },
 ];
 
-const redLogo =
-  "https://fontmeme.com/permalink/231012/fc51cd936aee781f007455ffc51b51ab.png";
 const blueLogo =
-  "https://fontmeme.com/permalink/231012/fbf91cf7f941ecc4f4a72a7ebb2a634d.png";
+  "https://fontmeme.com/permalink/231012/fc51cd936aee781f007455ffc51b51ab.png";
+const redLogo =
+  "https://fontmeme.com/permalink/231018/90d97b645b85f38e444ec2e727cec387.png";
 
 const Sidebar = () => {
   const { genreIdOrCategoryName } = useSelector(
@@ -36,7 +36,6 @@ const Sidebar = () => {
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
-
 
   return (
     <>
@@ -47,7 +46,7 @@ const Sidebar = () => {
       >
         <Box
           component="img"
-          src={theme.palette.mode === "light" ? redLogo : blueLogo}
+          src={theme.palette.mode === "light" ? blueLogo : redLogo}
           alt="Filmflix Logo"
           width={"70%"}
         />
@@ -91,6 +90,7 @@ const Sidebar = () => {
         ) : (
           data.genres.map(({ name, id }) => (
             <Link
+              component={RouterLink}
               key={name}
               to="/"
               color={theme.palette.text.primary}

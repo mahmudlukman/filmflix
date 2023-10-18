@@ -17,12 +17,13 @@ import {
   Brightness7,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import Search from "../Search/Search";
 import { fetchToken, createSessionId, moviesApi } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, userSelector } from "../../redux/features/auth";
+import { ColorModeContext } from "../../utils/ToggleColorMode";
 
 const drawerWidth = 240;
 
@@ -32,6 +33,8 @@ const Navbar = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
   const dispatch = useDispatch();
+
+  const colorMode = useContext(ColorModeContext)
 
   const token = localStorage.getItem("request_token");
   const sessionIdFromLocalStorage = localStorage.getItem("session_id");
@@ -86,7 +89,7 @@ const Navbar = () => {
               <Menu />
             </IconButton>
           )}
-          <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
+          <IconButton color="inherit" sx={{ ml: 1 }} onClick={colorMode.ToggleColorMode}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}
